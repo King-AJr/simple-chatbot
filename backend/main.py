@@ -48,7 +48,7 @@ async def chat_endpoint(request: ChatRequest):
         else:
             raise HTTPException(status_code=400, detail="No valid character prompt provided.")
 
-    chat = ChatGroq(temperature=0.3, model_name=request.model_name, max_tokens=200, verbose=True)
+    chat = ChatGroq(temperature=0.3, model_name=request.model_name, verbose=True)
     human = "{text}"
     prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", human)])
 

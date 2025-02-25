@@ -50,8 +50,8 @@ if st.button("Ask Agent!"):
         response = requests.post(f"{API_URL}/chat", json=payload)
         if response.status_code == 200:
             response_data = response.json()
-            st.subheader("Agent Response")
-            st.markdown(f"**Final Response:** {response_data['response']}")
+            # st.subheader("Agent Response")
+            # st.markdown(f"**Final Response:** {response_data['response']}")
         else:
             st.error("Error in response!")
 
@@ -65,7 +65,7 @@ for msg in history:
             f"""
             <div style="
                 text-align: left;
-                background-color: #e0e0e0;
+                background-color: #000;
                 padding: 10px;
                 border-radius: 10px;
                 margin: 10px 0;
@@ -82,7 +82,7 @@ for msg in history:
             f"""
             <div style="
                 text-align: right;
-                background-color: #cce5ff;
+                background-color: #262730;
                 padding: 10px;
                 border-radius: 10px;
                 margin: 10px 0;
