@@ -55,7 +55,6 @@ async def chat_endpoint(request: ChatRequest):
     prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", human)]) ###
 
     chat_history.add_user_message(request.messages[0])
-    print(request.messages[0])
     chain = prompt | chat
     ai_response = chain.invoke({"text": request.messages[0]})
     chat_history.add_ai_message(ai_response.content)
