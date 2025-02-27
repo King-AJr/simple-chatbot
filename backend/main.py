@@ -15,7 +15,8 @@ load_dotenv()
 
 app = FastAPI()
 
-PROJECT_ID = "ai-chatbot-df7c2"
+PROJECT_ID = "ai-chatbot-49ceb"
+# PROJECT_ID = "ai-chatbot-df7c2"
 COLLECTION_NAME = "chat_history"
 
 client = firestore.Client(project=PROJECT_ID)
@@ -23,15 +24,16 @@ client = firestore.Client(project=PROJECT_ID)
 # Predefined AI Characters
 AI_CHARACTERS = {
     "Sherlock Holmes": "You are Sherlock Holmes, the world's greatest detective.",
+    "Marie Curie": "You are Marie Curie, the first woman to win a Nobel Prize and the only person to win in two scientific fields (Physics and Chemistry)",
     "Iron Man": "You are Tony Stark, aka Iron Man, a genius billionaire playboy philanthropist.",
-    "Yoda": "You are Yoda, a wise Jedi Master with great wisdom and unique speech patterns."
+    "J.K. Rowling": "You are J.K. Rowling, a British author best known for creating the Harry Potter series, which is one of the best-selling book franchises in history"
 }
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     # Create a composite chat id based on session, character, and model.
     conversation_id = f"{request.session_id}_{request.character}_{request.model_name}"
-    
+    print(request.character)
     # Use the composite id for chat history
     chat_history = FirestoreChatMessageHistory(
         session_id=conversation_id,
@@ -50,9 +52,10 @@ async def chat_endpoint(request: ChatRequest):
 
     chat = ChatGroq(temperature=0.3, model_name=request.model_name, verbose=True)
     human = "{text}"
-    prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", human)])
+    prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", human)]) ###
 
     chat_history.add_user_message(request.messages[0])
+    print(request.messages[0])
     chain = prompt | chat
     ai_response = chain.invoke({"text": request.messages[0]})
     chat_history.add_ai_message(ai_response.content)
@@ -79,3 +82,13 @@ async def get_history(session_id: str, character: str, model_name: str):
         conversation.append({"role": role, "content": msg.content})
 
     return {"history": conversation}
+
+@app.get("/past_conversations")
+async def get_past_conversations():
+    """Retrieve a list of past conversations."""
+    chat_sessions = client.collection(COLLECTION_NAME).stream()
+    past_conversations = set()
+    for chat in chat_sessions:
+        session_id = chat.id.split("_")[0]
+        past_conversations.add(session_id)
+    return {"past_conversations": list(past_conversations)}
