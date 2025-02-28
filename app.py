@@ -74,6 +74,10 @@ with st.sidebar:
             st.rerun()
 
 # ---------- MAIN TITLE AND CHARACTER SELECTION ----------
+st.markdown(
+    "<h1 style='text-align: center;'>Team Alpha Chameleon Bot 🦎</h1>", 
+    unsafe_allow_html=True
+)
 
 if "session_id" not in st.session_state:
     st.session_state["session_id"] = str(uuid.uuid4())
@@ -89,6 +93,7 @@ characters = [
     {"display": "🦾 Iron Man", "value": "Iron Man"},
     {"display": "📖 J.K. Rowling", "value": "J.K. Rowling"}
 ]
+
 
 
 st.write("#")
