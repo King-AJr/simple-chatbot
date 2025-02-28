@@ -91,7 +91,7 @@ for idx, char in enumerate(characters):
 # Only show the custom prompt if "Custom" is selected
 system_prompt = ""
 if st.session_state.get("character") == "Custom":
-    system_prompt = st.text_area("Define your AI Agent:", height=30, placeholder="Type your description here...", key="custom_prompt")
+    system_prompt = st.text_area("Define your AI character with 'You are (character name)':", height=30, placeholder="Type your description here...", key="custom_prompt")
 
 # User query input using chat_input
 user_query = st.chat_input("Chat with Chameleon Bot")
@@ -152,11 +152,14 @@ if user_query:
 st.write("---")  # Divider line
 history = fetch_history(st.session_state["session_id"], selected_character, model_name)
 st.write(f"*Character: {selected_character}*")
-for msg in history:
-    if msg["role"] == "human":
-        message(msg['content'], is_user=True)
-    else:
-        message(msg['content'])
+try:
+    for msg in history:
+        if msg["role"] == "human":
+            message(msg['content'], is_user=True)
+        else:
+            message(msg['content'])
+except st.errors.DuplicateWidgetID:
+     st.warning("⚠️ Refresh the page and assign your characters using 'You are (character name)' next time")
 
 
 # Function to generate a PDF with the conversation summary and write it directly to the buffer
