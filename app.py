@@ -116,7 +116,7 @@ for idx, char in enumerate(characters):
 
 system_prompt = ""
 if st.session_state.get("character") == "Custom":
-    system_prompt = st.text_area("Define your AI Agent:", placeholder="Type your description here...", key="custom_prompt")
+    system_prompt = st.text_area("Define your AI character with 'You are (character name)':", placeholder="Type your description here...", key="custom_prompt")
 
 # ---------- CHAT INPUT AND RESPONSE HANDLING ----------
 
@@ -146,11 +146,14 @@ if user_query and user_query.strip():
 
 st.write("---")
 st.write(f"*Character: {selected_character}*")
-for msg in st.session_state["messages"]:
-    if msg["role"] == "human":
-        message(msg["content"], is_user=True)
-    else:
-        message(msg["content"])
+try:
+    for msg in st.session_state["messages"]:
+        if msg["role"] == "human":
+            message(msg["content"], is_user=True)
+        else:
+            message(msg["content"])
+except st.errors.DuplicateWidgetID:
+     st.warning("⚠️ Refresh the page and assign your characters using 'You are (character name)' next time")
 
 # ---------- PDF GENERATION FOR CONVERSATION DOWNLOAD ----------
 
