@@ -1,13 +1,17 @@
 
 import logging
 import os
+import json
 from fastapi import HTTPException
 from schema import ChatResponse
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from google.cloud import firestore
+from google.oauth2 import service_account
 from langchain_google_firestore import FirestoreChatMessageHistory
 from dotenv import load_dotenv
+import streamlit as st
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,7 +21,9 @@ load_dotenv()
 PROJECT_ID = os.getenv("PROJECT_ID")
 COLLECTION_NAME = "chat_history"
 
-client = firestore.Client(project=PROJECT_ID)
+key_dict = json.loads(st.secrets["textkey"])
+creds = service_account.Credentials.from_service_account_info(key_dict)
+client = firestore.Client(credentials=creds, project=PROJECT_ID)
 
 def get_bot_response(user_query, character, model_name, system_prompt, session_id):
     """
