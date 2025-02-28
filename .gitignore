@@ -2,3 +2,4 @@
 .venv
 aai1
 secrets.toml
+ai-chatbot.json
